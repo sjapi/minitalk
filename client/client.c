@@ -6,13 +6,17 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:58:56 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 13:38:06 by azolotarev       ###   ########.fr       */
+/*   Updated: 2025/03/26 18:55:25 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+
+static void	handler(int sig)
+{
+}
 
 static int	ft_strlen(char *str)
 {
@@ -24,46 +28,57 @@ static int	ft_strlen(char *str)
 	return (len);
 }
 
-static	void	send_msg(pid_t pid, char *msg)
+static void	send_msg_len(int len, pid_t pid)
 {
 	int		i;
-	int		j;
-	char	c;
-	int 	len;
+	char	bit;
 
-	// send size
-	len = 0;
-	while (msg[len])
-		len++;
 	i = sizeof(int) * 8 - 1;
 	while (i >= 0)
 	{
-		c = ((len >> i) & 0b1) + '0';
-		write(1, &c, 1);
-		if (c == '0')
+		bit = (len >> i) & 0b1;
+// DEBUG
+		char wbit = '0' + bit;
+		write(1, &wbit, 1);
+// DEBUG
+		if (bit == 0)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
 		i--;
-		usleep(50000);
+		usleep(500);
 	}
 	write(1, "\n", 1);
-	
-	// send msg
+}
+
+static	void	send_msg(char *msg, pid_t pid)
+{
+	int		i;
+	int		j;
+	char	bit;
+	int 	len;
+
+	len = ft_strlen(msg);
+	if (len == 0)
+		return ;
+	send_msg_len(len, pid);
 	i = 0;
 	while (i < ft_strlen(msg))
 	{
 		j = 8 - 1;
 		while (j >= 0)
 		{
-			c = ((msg[i] >> j) & 0b1) + '0';
-			write(1, &c, 1);
-			if (c == '0')
+			bit = (msg[i] >> j) & 0b1;
+// DEBUG
+			char wbit = '0' + bit;
+			write(1, &wbit, 1);
+// DEBUG
+			if (bit == 0)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
 			j--;
-			usleep(50000);
+			usleep(500);
 		}
 		i++;
 	}
@@ -71,7 +86,10 @@ static	void	send_msg(pid_t pid, char *msg)
 
 int	main(int argc, char **argv)
 {
-	if (argc == 3)
-		send_msg(atoi(argv[1]), argv[2]);
+	if (argc != 3)
+		return (0);
+	signal(SIGUSR1, handler);
+	signal(SIGUSR2, handler);
+	send_msg(argv[2], atoi(argv[1]));
 	return (0);
 }

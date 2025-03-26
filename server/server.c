@@ -6,65 +6,40 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:03:05 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 13:59:22 by azolotarev       ###   ########.fr       */
+/*   Updated: 2025/03/26 17:56:11 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <strings.h> // tmp for bzero
 #include <stdio.h> // tmp for printf
-#include "msg.h"
+#include "server.h"
 
-void	ft_putu(unsigned int n);
-void	ft_putstr(char *str);
-
-t_msg	g_msg;
+static t_msg	g_msg;
 
 static void	handler(int sig, siginfo_t *info, void *ucontext)
 {
 	char			bit;
 
-	if (g_msg.pid != info->si_pid)
-	{
-		g_msg.pid = info->si_pid;
-		g_msg.msg_len = 0;
-		g_msg.bits_received = 0;
-		if (g_msg.alloc)
-			free(g_msg.msg);
-		g_msg.alloc = 0;
-	}
 	bit = sig == SIGUSR2;
-	if (g_msg.bits_received < (sizeof(unsigned int) * 8))
-	{
+	if (g_msg.pid != info->si_pid)
+		reset_msg(&g_msg, info->si_pid);
+	if (g_msg.bits_received < INT_BITS)
 		g_msg.msg_len = (g_msg.msg_len << 1) | bit;
-	}
-	if (g_msg.bits_received == (sizeof(unsigned int) * 8))
-	{
-		g_msg.msg = malloc(sizeof(char) * (g_msg.msg_len + 1));
-		if (!g_msg.msg)
-			exit(EXIT_FAILURE);
-		bzero(g_msg.msg, g_msg.msg_len + 1);
-	}
-	if (g_msg.bits_received >= (sizeof(unsigned int) * 8))
-	{
-		int i = (g_msg.bits_received - sizeof(g_msg.msg_len) * 8) / 8;
-		g_msg.msg[i] = (g_msg.msg[i] << 1) | bit;
-	}
+	if (g_msg.bits_received == INT_BITS)
+		msg_str_alloc(&g_msg);
+	if (g_msg.bits_received >= INT_BITS)
+		msg_str_add_bit(&g_msg, bit);
 	g_msg.bits_received++;
-	if (g_msg.bits_received == g_msg.msg_len * 8 + (sizeof(unsigned int) * 8))
-	{
-		ft_putstr(g_msg.msg);
-		ft_putstr("\n");
-	} 
+	if (g_msg.bits_received == g_msg.msg_len * 8 + INT_BITS)
+		msg_str_print_reset(&g_msg);
+	(void)ucontext;
 }
 
-static int	listen(void)
+static void	listen(void)
 {
 	while (1)
 		usleep(500000);
-	return (0);
 }
 
 int	main(void)
@@ -77,5 +52,5 @@ int	main(void)
 	sigaction(SIGUSR1, &action, NULL);
 	sigaction(SIGUSR2, &action, NULL);
 	printf("pid: %d\n", getpid());
-	return (listen());
+	return (listen(), 0);
 }
