@@ -6,13 +6,23 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:58:56 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 06:10:28 by azolotarev       ###   ########.fr       */
+/*   Updated: 2025/03/26 13:38:06 by azolotarev       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+
+static int	ft_strlen(char *str)
+{
+	int	len;
+
+	len = 0;
+	while (str[len])
+		len++;
+	return (len);
+}
 
 static	void	send_msg(pid_t pid, char *msg)
 {
@@ -37,11 +47,11 @@ static	void	send_msg(pid_t pid, char *msg)
 		i--;
 		usleep(50000);
 	}
+	write(1, "\n", 1);
 	
 	// send msg
-	write(1, "\n", 1);
 	i = 0;
-	while (msg[i])
+	while (i < ft_strlen(msg))
 	{
 		j = 8 - 1;
 		while (j >= 0)

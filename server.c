@@ -6,7 +6,7 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:03:05 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 06:42:08 by azolotarev       ###   ########.fr       */
+/*   Updated: 2025/03/26 13:59:22 by azolotarev       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,14 @@ static void	handler(int sig, siginfo_t *info, void *ucontext)
 	}
 	if (g_msg.bits_received >= (sizeof(unsigned int) * 8))
 	{
-		// some fixes here§
-		int	id = ((g_msg.bits_received - sizeof(unsigned int) * 8) / 8) - 1;
-		g_msg.msg[id] = (g_msg.msg[id] << 1) | bit;
+		int i = (g_msg.bits_received - sizeof(g_msg.msg_len) * 8) / 8;
+		g_msg.msg[i] = (g_msg.msg[i] << 1) | bit;
 	}
 	g_msg.bits_received++;
 	if (g_msg.bits_received == g_msg.msg_len * 8 + (sizeof(unsigned int) * 8))
 	{
-		// ignores first letter
-		write(1, g_msg.msg, g_msg.msg_len);
+		ft_putstr(g_msg.msg);
+		ft_putstr("\n");
 	} 
 }
 
