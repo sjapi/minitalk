@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msg.h                                              :+:      :+:    :+:   */
+/*   utis.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/26 03:58:28 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 05:10:50 by azolotarev       ###   ########.fr       */
+/*   Created: 2025/03/26 05:36:04 by azolotarev        #+#    #+#             */
+/*   Updated: 2025/03/26 05:38:09 by azolotarev       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSG_H
-# define MSG_H
-# include <unistd.h>
+#include <unistd.h>
 
-typedef struct s_msg
+void	ft_putstr(char *str)
 {
-	pid_t			pid;
-	unsigned int	msg_len;
-	unsigned int	bits_received;
-	char			*msg;
-	char			alloc;
-}	t_msg;
+	while (*str)
+		str += write(1, str, 1);
+}
 
-#endif
+void	ft_putu(unsigned int n)
+{
+	char	c;
+
+	if (n >= 10)
+	{
+		ft_putu(n / 10);
+		ft_putu(n % 10);
+	}
+	else
+	{
+		c = '0' + n;
+		write(1, &c, 1);
+	}
+}
