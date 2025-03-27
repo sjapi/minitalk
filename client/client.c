@@ -6,7 +6,7 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:58:56 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 18:55:25 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/27 06:53:46 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,7 @@ int	main(int argc, char **argv)
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, handler);
 	send_msg(argv[2], atoi(argv[1]));
+	while (1)
+		usleep(5000); // waiting responses from server
 	return (0);
 }

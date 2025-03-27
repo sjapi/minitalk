@@ -6,7 +6,7 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:03:05 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 17:56:11 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/27 07:24:36 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static void	handler(int sig, siginfo_t *info, void *ucontext)
 	g_msg.bits_received++;
 	if (g_msg.bits_received == g_msg.msg_len * 8 + INT_BITS)
 		msg_str_print_reset(&g_msg);
+	// notify client that I've received signal
+	kill(info->si_pid, sig);
 	(void)ucontext;
 }
 
