@@ -6,13 +6,12 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:03:05 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/28 19:54:06 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:57:35 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <signal.h>
-#include <stdio.h> // tmp for printf
 #include "server.h"
 
 static t_msg	g_msg;
@@ -52,6 +51,6 @@ int	main(void)
 	action.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &action, NULL);
 	sigaction(SIGUSR2, &action, NULL);
-	printf("pid: %d\n", getpid());
+	print_pid(getpid());
 	return (listen(), 0);
 }

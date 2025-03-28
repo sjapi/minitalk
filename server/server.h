@@ -6,7 +6,7 @@
 /*   By: azolotar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 17:48:58 by azolotar          #+#    #+#             */
-/*   Updated: 2025/03/28 18:57:02 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:58:39 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,7 @@ void	ft_bzero(void *s, size_t n);
 void	ft_putstr(char *str);
 
 void	ft_putu(unsigned int n);
+
+void	print_pid(int pid);
 
 #endif

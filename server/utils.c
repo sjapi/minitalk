@@ -6,7 +6,7 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 05:36:04 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/26 17:20:20 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:59:29 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ void	ft_putu(unsigned int n)
 		c = '0' + n;
 		write(1, &c, 1);
 	}
+}
+
+void	print_pid(int pid)
+{
+	ft_putu(pid);
+	ft_putstr("\n");
 }
 
 void	ft_bzero(void *s, size_t n)
