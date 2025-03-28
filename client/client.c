@@ -6,7 +6,7 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:58:56 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/27 06:53:46 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:01:14 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 #include <stdlib.h>
 #include <signal.h>
 
+static char	g_acknowledge = -1;
+
 static void	handler(int sig)
 {
+	g_acknowledge = sig;
 }
 
 static int	ft_strlen(char *str)
@@ -32,23 +35,24 @@ static void	send_msg_len(int len, pid_t pid)
 {
 	int		i;
 	char	bit;
+	char	sig;
 
 	i = sizeof(int) * 8 - 1;
 	while (i >= 0)
 	{
 		bit = (len >> i) & 0b1;
-// DEBUG
-		char wbit = '0' + bit;
-		write(1, &wbit, 1);
-// DEBUG
 		if (bit == 0)
-			kill(pid, SIGUSR1);
+			sig = SIGUSR1;
 		else
-			kill(pid, SIGUSR2);
+			sig = SIGUSR2;
+		g_acknowledge = -1;
+		kill(pid, sig);
+		while (g_acknowledge == -1)
+			pause();
+		if (g_acknowledge != sig)
+			exit(228);
 		i--;
-		usleep(500);
 	}
-	write(1, "\n", 1);
 }
 
 static	void	send_msg(char *msg, pid_t pid)
@@ -56,7 +60,8 @@ static	void	send_msg(char *msg, pid_t pid)
 	int		i;
 	int		j;
 	char	bit;
-	int 	len;
+	char	sig;
+	int		len;
 
 	len = ft_strlen(msg);
 	if (len == 0)
@@ -69,16 +74,17 @@ static	void	send_msg(char *msg, pid_t pid)
 		while (j >= 0)
 		{
 			bit = (msg[i] >> j) & 0b1;
-// DEBUG
-			char wbit = '0' + bit;
-			write(1, &wbit, 1);
-// DEBUG
 			if (bit == 0)
-				kill(pid, SIGUSR1);
+				sig = SIGUSR1;
 			else
-				kill(pid, SIGUSR2);
+				sig = SIGUSR2;
+			g_acknowledge = -1;
+			kill(pid, sig);
+			while (g_acknowledge == -1)
+				pause();
+			if (g_acknowledge != sig)
+				exit(228);
 			j--;
-			usleep(500);
 		}
 		i++;
 	}
@@ -91,7 +97,5 @@ int	main(int argc, char **argv)
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, handler);
 	send_msg(argv[2], atoi(argv[1]));
-	while (1)
-		usleep(5000); // waiting responses from server
 	return (0);
 }

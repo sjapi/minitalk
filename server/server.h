@@ -6,7 +6,7 @@
 /*   By: azolotar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 17:48:58 by azolotar          #+#    #+#             */
-/*   Updated: 2025/03/27 06:55:05 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:57:02 by azolotar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 # include <unistd.h>
 # include <stdlib.h>
 
-# define INT_BITS (sizeof(int) * 8)
+# ifndef INT_BITS
+#  define INT_BITS 32
+# endif 
 
 typedef struct s_msg
 {
