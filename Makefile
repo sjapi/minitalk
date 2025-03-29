@@ -20,7 +20,7 @@ $(SERVER): $(SERVER_SRCS)
 	$(CC) $(CFLAGS) $(SERVER_SRCS) -o $(SERVER)
 
 $(CLIENT): $(CLIENT_SRCS)
-	$(CC) $(CFLAGS) $(SERVER_SRCS) -o $(CLIENT)
+	$(CC) $(CFLAGS) $(CLIENT_SRCS) -o $(CLIENT)
 
 clean:
 
