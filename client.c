@@ -6,7 +6,7 @@
 /*   By: azolotarev <azolotarev@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 04:58:56 by azolotarev        #+#    #+#             */
-/*   Updated: 2025/03/28 20:46:57 by azolotar         ###   ########.fr       */
+/*   Updated: 2025/08/11 22:43:44 by 032zolotarev     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,15 @@ static void	send_msg(char *msg, pid_t pid)
 
 int	main(int argc, char **argv)
 {
+	pid_t	server_pid;
+
 	if (argc != 3)
-		return (0);
+		return (1);
+	server_pid = ft_atoi(argv[1]);
+	if (kill(server_pid, 0) != 0)
+		return (write(1, "Cannot find given pid\n", 22), 1);
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, handler);
-	send_msg(argv[2], ft_atoi(argv[1]));
+	send_msg(argv[2], server_pid);
 	return (0);
 }
